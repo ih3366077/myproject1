@@ -1,31 +1,36 @@
 /*
- * Master.c
+ * Slave.c
  *
- * Created: 22/11/42 05:41:17 ص
+ * Created: 23/11/42 12:51:05 ص
  * Author : ih321
  */ 
 
 #include "STD_TYPES.h"
-#include "SPI_interface.h"
 #include "BIT_MATH.h"
-#include "UART_interface.h"
-#include <avr/io.h>
+#include "DIO_interface.h"
+#include "DIO_private.h"
+#include "SPI_interface.h"
+
 
 int main(void)
 {
+	DDRC_REG = 0xff;
+	
+	SPI_SlaveInit();
 	u8 data;
-	SPI_MasterInit();
-	UART_Init();
-	
-	
-    /* Replace with your application code */
+	    
     while (1) 
     {
-		data = UART_ReadData();
-		//UART_SendData(data);
-		SPI_SendData(data);
-		
-		
+		data = SPI_ResieveData();
+		PORTA_REG=data;
+		if (data=='x')
+		{
+			TOG_BIT(PORTC_REG,0);
+		}
+		if (data=='y')
+		{
+			TOG_BIT(PORTC_REG,1);
+		}
     }
 }
 
